@@ -104,12 +104,12 @@ CodeAlpha_FrontendDevelopment/
 
 ---
 
-🛠️ Technologies Used
+***🛠️ Technologies Used***
 ---
-    -HTML5
-    -CSS3
-    -JavaScript (ES6)
-    -Git & GitHub
+    - HTML5
+    - CSS3
+    - JavaScript (ES6)
+    - Git & GitHub
 ---
 🎓 About the Internship
 ---
