@@ -21,7 +21,7 @@ A responsive image gallery with smooth navigation and visual effects.
 * Hover effects and smooth CSS transitions
 * Fully responsive design
 
-**Bonus Features:**
+**Enhanced Features:**
 
 * Image filters (grayscale, brightness, etc.)
 * Category-based sorting and filtering
@@ -40,7 +40,7 @@ A clean and functional calculator supporting basic arithmetic operations.
 * Handles edge cases (e.g., division by zero)
 * Interactive button-based UI
 
-**Bonus Features:**
+**Enhanced Features:**
 
 * Keyboard input support
 * Improved UI styling and animations
@@ -58,7 +58,7 @@ A personal portfolio website showcasing skills and projects.
 * Responsive layout for all devices
 * Clean design with animations and hover effects
 
-**Bonus Features:**
+**Enhanced Features:**
 
 * Deployment using GitHub Pages / Netlify
 
@@ -75,7 +75,7 @@ An interactive music player with audio control features.
 * Progress bar with seek functionality
 * Volume control
 
-**Bonus Features:**
+**Enhanced Features:**
 
 * Playlist support
 * Auto-play feature
