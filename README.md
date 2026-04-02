@@ -106,15 +106,15 @@ CodeAlpha_FrontendDevelopment/
 
 🛠️ Technologies Used
 ---
-    HTML5
-    CSS3
-    JavaScript (ES6)
-    Git & GitHub
+    -HTML5
+    -CSS3
+    -JavaScript (ES6)
+    -Git & GitHub
 ---
 🎓 About the Internship
 ---
-Organization: CodeAlpha
-Domain: Frontend Development
+-Organization: CodeAlpha
+-Domain: Frontend Development
 
 This internship provided hands-on experience in building real-world web applications and improving frontend development skills through practical tasks.
 
@@ -122,19 +122,19 @@ This internship provided hands-on experience in building real-world web applicat
 ---
 🚀 Skills Gained
 ---
-Responsive UI development
-JavaScript DOM manipulation
-Interactive application design
-Code structuring and best practices
-Version control using GitHub
+-Responsive UI development
+-JavaScript DOM manipulation
+-Interactive application design
+-Code structuring and best practices
+-Version control using GitHub
 
 ---
 🔮 Future Improvements
 ---
-Add advanced UI components
-Enhance animations and transitions
-Deploy all projects with live demos
-Improve performance and responsiveness
+-Add advanced UI components
+-Enhance animations and transitions
+-Deploy all projects with live demos
+-Improve performance and responsiveness
 
 
 
