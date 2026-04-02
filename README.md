@@ -149,6 +149,9 @@ This internship provided hands-on experience in building real-world web applicat
 * Improve performance and responsiveness
 
 ---
+## 🙋‍♀️ Developer
+ * V.Rushitha Reddy
+ * Email: rushithareddy2007@gmail.com
 
 
 > 💡 *This repository reflects my learning journey in frontend development.*
