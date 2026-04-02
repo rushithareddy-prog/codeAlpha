@@ -88,9 +88,26 @@ An interactive music player with audio control features.
 CodeAlpha-Frontend-Internship
 │
 ├── Task-1-Image-Gallery
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
+│
 ├── Task-2-Calculator
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
+│
 ├── Task-3-Portfolio-Website
-└── Task-4-Music-Player
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
+│
+├── Task-4-Music-Player
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
+│
+└── README.md
 ```
 
 ---
