@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculator</title>
+  <style>
+    /* ── Reset & Base ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f0f0ed;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      padding: 24px;
+    }
+    /* ── Wrapper ─── */
+    .calc-wrapper {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    /* ── Calculator Body ─── */
+    .calculator {
+      background: #ffffff;
+      border: 1px solid #e0ddd6;
+      border-radius: 16px;
+      padding: 20px;
+      width: 300px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+    }
+    /* ── Display ─── */
+    .display-area {
+      background: #f7f6f2;
+      border: 1px solid #e5e2da;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 16px;
+      min-height: 90px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+    .display-expr {
+      font-size: 13px;
+      color: #999;
+      text-align: right;
+      min-height: 18px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .display-main {
+      font-size: 34px;
+      font-weight: 500;
+      color: #1a1a1a;
+      text-align: right;
+      word-break: break-all;
+      line-height: 1.2;
+    }
+    /* ── Button Grid ─── */
+    .btn-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    /* ── Base Button ── */
+    .btn {
+      border: 1px solid #e5e2da;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #1a1a1a;
+      font-size: 16px;
+      font-weight: 400;
+      padding: 14px 8px;
+      cursor: pointer;
+      transition: background 0.12s, transform 0.08s;
+      font-family: inherit;
+      user-select: none;
+    }
+    .btn:hover   { background: #f7f6f2; }
+    .btn:active  { transform: scale(0.95); background: #eeede8; }
+    /* Operator buttons */
+    .btn-op {
+      background: #e8f0fb;
+      color: #1a5fa8;
+      border-color: #c5d9f5;
+      font-weight: 500;
+    }
+    .btn-op:hover  { background: #d0e2f8; }
+    .btn-op:active { background: #b8cfef; transform: scale(0.95); }
+    /* Equals button */
+    .btn-eq {
+      background: #1a5fa8;
+      color: #ffffff;
+      border-color: #1a5fa8;
+      font-weight: 500;
+      grid-row: span 2;
+    }
+    .btn-eq:hover  { background: #174f8f; }
+    .btn-eq:active { background: #12417a; transform: scale(0.95); }
+    /* Clear button */
+    .btn-clear {
+      background: #fdecea;
+      color: #b02020;
+      border-color: #f5c0bc;
+      font-weight: 500;
+    }
+    .btn-clear:hover  { background: #f9d5d2; }
+    .btn-clear:active { background: #f4bab6; transform: scale(0.95); }
+    /* Function buttons (sign, percent) */
+    .btn-fn {
+      background: #f2f1ed;
+      color: #555;
+      font-size: 14px;
+    }
+    .btn-fn:hover { background: #e8e7e2; }
+    /* Wide zero button */
+    .btn-zero { grid-column: span 2; }
+    /* ── Keyboard hint ────────────────────────────────── */
+    .kbd-hint {
+      font-size: 11px;
+      color: #bbb;
+      text-align: center;
+      margin-top: 12px;
+      letter-spacing: 0.3px;
+    }
+    /* ── History Panel ────────────────────────────────── */
+    .history-panel {
+      background: #ffffff;
+      border: 1px solid #e0ddd6;
+      border-radius: 16px;
+      padding: 20px;
+      width: 240px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+      max-height: 520px;
+    }
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e5e2da;
+    }
+    .history-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: #1a1a1a;
+    }
+    .clear-hist-btn {
+      font-size: 12px;
+      color: #b02020;
+      background: #fdecea;
+      border: 1px solid #f5c0bc;
+      border-radius: 8px;
+      padding: 4px 10px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.12s;
+    }
+    .clear-hist-btn:hover { background: #f9d5d2; }
+    .history-list {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    /* Thin scrollbar */
+    .history-list::-webkit-scrollbar { width: 4px; }
+    .history-list::-webkit-scrollbar-track { background: transparent; }
+    .history-list::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
+    .history-item {
+      background: #f7f6f2;
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: border-color 0.12s, background 0.12s;
+      position: relative;
+    }
+    .history-item:hover {
+      border-color: #c5d9f5;
+      background: #f0f6ff;
+    }
+    .hist-expr {
+      font-size: 12px;
+      color: #999;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 3px;
+    }
+    .hist-result {
+      font-size: 17px;
+      font-weight: 500;
+      color: #1a1a1a;
+      text-align: right;
+    }
+    .hist-del {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      font-size: 11px;
+      color: #ccc;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: inherit;
+      display: none;
+      line-height: 1;
+      transition: color 0.1s;
+    }
+    .history-item:hover .hist-del { display: block; }
+    .hist-del:hover { color: #b02020; }
+
+    .history-empty {
+      font-size: 13px;
+      color: #ccc;
+      text-align: center;
+      padding-top: 28px;
+    }
+  </style>
+</head>
+<body>
+<div class="calc-wrapper">
+  <!-- ── Calculator ─── -->
+  <div class="calculator">
+    <div class="display-area">
+      <div class="display-expr" id="expr"></div>
+      <div class="display-main" id="display">0</div>
+    </div>
+    <div class="btn-grid">
+      <!-- Row 1 -->
+      <button class="btn btn-clear" data-action="clear">AC</button>
+      <button class="btn btn-fn"    data-action="sign">+/−</button>
+      <button class="btn btn-fn"    data-action="percent">%</button>
+      <button class="btn btn-op"    data-action="op" data-val="÷">÷</button>
+      <!-- Row 2 -->
+      <button class="btn" data-action="digit" data-val="7">7</button>
+      <button class="btn" data-action="digit" data-val="8">8</button>
+      <button class="btn" data-action="digit" data-val="9">9</button>
+      <button class="btn btn-op"    data-action="op" data-val="×">×</button>
+      <!-- Row 3 -->
+      <button class="btn" data-action="digit" data-val="4">4</button>
+      <button class="btn" data-action="digit" data-val="5">5</button>
+      <button class="btn" data-action="digit" data-val="6">6</button>
+      <button class="btn btn-op"    data-action="op" data-val="−">−</button>
+      <!-- Row 4 -->
+      <button class="btn" data-action="digit" data-val="1">1</button>
+      <button class="btn" data-action="digit" data-val="2">2</button>
+      <button class="btn" data-action="digit" data-val="3">3</button>
+      <button class="btn btn-op"    data-action="op" data-val="+">+</button>
+      <!-- Row 5 — zero spans 2 cols, equals spans 2 rows -->
+      <button class="btn btn-zero"  data-action="digit" data-val="0">0</button>
+      <button class="btn"           data-action="dot">.</button>
+      <button class="btn btn-eq"    data-action="equals">=</button>
+    </div>
+    <p class="kbd-hint">keyboard supported &nbsp;·&nbsp; Esc = clear</p>
+  </div>
+  <!-- ── History Panel─── -->
+  <div class="history-panel">
+    <div class="history-header">
+      <span class="history-title">History</span>
+      <button class="clear-hist-btn" id="clearHistBtn">Clear all</button>
+    </div>
+    <div class="history-list" id="historyList">
+      <div class="history-empty" id="historyEmpty">No calculations yet</div>
+    </div>
+  </div>
+</div>
+<script>
+  // ── State ───
+  let currentInput = '0';   // what the user is currently typing
+  let prevInput    = '';    // left-hand operand stored before operator press
+  let operator     = null;  // pending operator symbol
+  let justEvaled   = false; // true right after pressing =
+  let history      = [];    // [{expr, result}, ...]
+  const displayEl  = document.getElementById('display');
+  const exprEl     = document.getElementById('expr');
+  const histList   = document.getElementById('historyList');
+  const histEmpty  = document.getElementById('historyEmpty');
+  // ── Helpers ───
+  // Format a JS number cleanly — avoid floating-point artifacts
+  function formatNum(n) {
+    if (!isFinite(n)) return 'Error';
+    let s = parseFloat(n.toPrecision(12)).toString();
+    if (s.includes('e')) return n.toExponential(4);          // very large/small
+    if (s.length > 12)   s = parseFloat(n.toFixed(8)).toString(); // trim trailing noise
+    return s;
+  }
+  function setDisplay(val) {
+    displayEl.textContent = val;
+  }
+  // ── History ───
+  function addHistory(expr, result) {
+    history.unshift({ expr, result });
+    renderHistory();
+  }
+  function renderHistory() {
+    histList.innerHTML = '';
+    if (history.length === 0) {
+      histEmpty.style.display = 'block';
+      histList.appendChild(histEmpty);
+      return;
+    }
+    history.forEach((item, idx) => {
+      // Container
+      const div = document.createElement('div');
+      div.className = 'history-item';
+      // Expression label (small, muted)
+      const exprDiv = document.createElement('div');
+      exprDiv.className = 'hist-expr';
+      exprDiv.textContent = item.expr;
+      // Result (large, prominent)
+      const resDiv = document.createElement('div');
+      resDiv.className = 'hist-result';
+      resDiv.textContent = item.result;
+      // Delete button (shows on hover via CSS)
+      const delBtn = document.createElement('button');
+      delBtn.className = 'hist-del';
+      delBtn.title = 'Remove';
+      delBtn.textContent = '✕';
+      delBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // don't trigger the recall click
+        history.splice(idx, 1);
+        renderHistory();
+      });
+      // Click to recall result into calculator
+      div.addEventListener('click', () => {
+        currentInput = item.result;
+        justEvaled   = true;
+        operator     = null;
+        prevInput    = '';
+        exprEl.textContent = '';
+        setDisplay(currentInput);
+      });
+      div.appendChild(exprDiv);
+      div.appendChild(resDiv);
+      div.appendChild(delBtn);
+      histList.appendChild(div);
+    });
+  }
+  document.getElementById('clearHistBtn').addEventListener('click', () => {
+    history = [];
+    renderHistory();
+  });
+  // ── Core Arithmetic ───
+  function compute(a, op, b) {
+    a = parseFloat(a);
+    b = parseFloat(b);
+    switch (op) {
+      case '+': return a + b;
+      case '−': return a - b;
+      case '×': return a * b;
+      case '÷': return b === 0 ? null : a / b;
+    }
+  }
+  // ── Button Handlers ───
+  function handleDigit(d) {
+    if (justEvaled) {
+      // Start fresh after an equals press
+      currentInput = d;
+      justEvaled   = false;
+    } else {
+      currentInput = (currentInput === '0') ? d : currentInput + d;
+    }
+    if (currentInput.replace('-', '').length > 12) return; // cap length
+    setDisplay(currentInput);
+  }
+  function handleDot() {
+    if (justEvaled) { currentInput = '0.'; justEvaled = false; setDisplay(currentInput); return; }
+    if (!currentInput.includes('.')) {
+      currentInput += '.';
+      setDisplay(currentInput);
+    }
+  }
+  function handleOp(op) {
+    // Chain: if there's already a pending op and user has typed a right-hand number, evaluate first
+    if (operator && prevInput !== '' && !justEvaled) {
+      const res = compute(prevInput, operator, currentInput);
+      if (res === null) { setDisplay('Error'); currentInput = '0'; operator = null; prevInput = ''; exprEl.textContent = ''; return; }
+      const resStr = formatNum(res);
+      currentInput = resStr;
+      setDisplay(resStr);
+    }
+    operator     = op;
+    prevInput    = currentInput;
+    justEvaled   = false;
+    exprEl.textContent = prevInput + ' ' + op; // show expression preview
+    currentInput = '0'; // ready for right-hand input
+  }
+  function handleEquals() {
+    if (!operator || prevInput === '') return;
+    const expr   = prevInput + ' ' + operator + ' ' + currentInput;
+    const res    = compute(prevInput, operator, currentInput);
+    if (res === null) {
+      exprEl.textContent = expr + ' =';
+      setDisplay('Error');
+      return;
+    }
+    const resStr = formatNum(res);
+    exprEl.textContent = expr + ' =';
+    setDisplay(resStr);
+    addHistory(expr, resStr);
+    // Reset state
+    currentInput = resStr;
+    prevInput    = '';
+    operator     = null;
+    justEvaled   = true;
+  }
+  function handleSign() {
+    if (currentInput === '0') return;
+    currentInput = currentInput.startsWith('-') ? currentInput.slice(1) : '-' + currentInput;
+    setDisplay(currentInput);
+  }
+  function handlePercent() {
+    const v = parseFloat(currentInput);
+    if (isNaN(v)) return;
+    currentInput = formatNum(v / 100);
+    setDisplay(currentInput);
+  }
+  function handleClear() {
+    currentInput = '0';
+    prevInput    = '';
+    operator     = null;
+    justEvaled   = false;
+    exprEl.textContent = '';
+    setDisplay('0');
+  }
+  // ── Button Click Router ───
+  document.querySelector('.btn-grid').addEventListener('click', (e) => {
+    const btn = e.target.closest('.btn');
+    if (!btn) return;
+    const { action, val } = btn.dataset;
+    if      (action === 'digit')   handleDigit(val);
+    else if (action === 'op')      handleOp(val);
+    else if (action === 'equals')  handleEquals();
+    else if (action === 'dot')     handleDot();
+    else if (action === 'clear')   handleClear();
+    else if (action === 'sign')    handleSign();
+    else if (action === 'percent') handlePercent();
+  });
+  // ── Keyboard Support ───
+  document.addEventListener('keydown', (e) => {
+    if (e.key >= '0' && e.key <= '9')         handleDigit(e.key);
+    else if (e.key === '.')                    handleDot();
+    else if (e.key === '+')                    handleOp('+');
+    else if (e.key === '-')                    handleOp('−');
+    else if (e.key === '*')                    handleOp('×');
+    else if (e.key === '/') { e.preventDefault(); handleOp('÷'); }
+    else if (e.key === 'Enter' || e.key === '=') handleEquals();
+    else if (e.key === 'Escape')               handleClear();
+    else if (e.key === '%')                    handlePercent();
+    else if (e.key === 'Backspace') {
+      if (justEvaled) { handleClear(); return; }
+      if (currentInput.length > 1) {
+        currentInput = currentInput.slice(0, -1);
+        setDisplay(currentInput);
+      } else {
+        currentInput = '0';
+        setDisplay('0');
+      }
+    }
+  });
+  // ── Init ───
+  renderHistory();
+</script>
+</body>
+</html>
